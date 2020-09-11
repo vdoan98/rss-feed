@@ -1,99 +1,138 @@
 import json
 import os 
-from flask import Flask, redirect, request, url_for
+from flask import Flask, redirect, request, url_for, request, jsonify, abort
 import feedparser
-from feedparser import parse
-
-from flask_login import (
-    LoginManager,
-    current_user,
-    login_required,
-    login_user,
-    logout_user,
-)
-from oauthlib.oauth2 import WebApplicationClient
-import requests
-
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
-GOOGLE_DISCOVERY_URL = (
-    "https://accounts.google.com/.well-known/openid-configuration"
-)
-
-def get_google_provider_cfg():
-    return requests.get(GOOGLE_DISCOVERY_URL).json()
+from src.models import setup_db, User, Feed
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 
-# User session management setup
-# https://flask-login.readthedocs.io/en/latest
-login_manager = LoginManager()
-login_manager.init_app(app)
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+    return response
 
-# OAuth 2 client setup
-client = WebApplicationClient(GOOGLE_CLIENT_ID)
+setup_db(app)
 
-# Flask-Login helper to retrieve a user from our db
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-
-@app.route('/')
-def index():
-    if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_pic
-            )
-        )
-    else:
-        return '<a class="button" href="/login">Google Login</a>'
-
-
-@app.route("/login")
+@app.route('/login', methods=['GET'])
 def login():
-    # Find out what URL to hit for Google login
-    google_provider_cfg = get_google_provider_cfg()
-    authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+    #login_data = request.get_json()
 
-    # Use library to construct the request for Google login and provide
-    # scopes that let you retrieve user's profile from Google
-    request_uri = client.prepare_request_uri(
-        authorization_endpoint,
-        redirect_uri=request.base_url + "/callback",
-        scope=["openid", "email", "profile"],
-    )
-    return redirect(request_uri)
+    return 
 
-@app.route("/login/callback")
-def callback():
-    # Get authorization code Google sent back to you
-    code = request.args.get("code")
+@app.route('/signup', methods=['POST'])
+def signup():
+    return 
 
-
-'''TODO: Add more on login'''
-
-
-@app.route('/feed')
-def feed():
+@app.route('/feeds', methods=['GET'])
+def get_feed(username):
     #TODO: real time update
-    feed_url = request.get_json() #Not correct
-    RSSFeed = parse(feed_url)
+    #feed_url = request.get_json() #Not correct
+    user_id = User.query.filter_by(username=username).first().id
+    feed_urls = Feed.query.filter_by(user_id=user_id).all()
 
     feed_dict = {}
 
-    for i in range(len(RSSFeed.entries)):
-        feed_list = []
-        feed_list.append(RSSFeed.entries[i].title)
-        feed_list.append(RSSFeed.entries[i].link)
-        feed_list.append(RSSFeed.entries[i].summary)
-        published = RSSFeed.entries[i].published
-        feed_list.append(published[:len(published)-6])
-        feed_dict[i] = feed_list
-    
-    return feed_dict
+    for rss in feed_urls:
+        rssFeed = feedparser.parse(rss.feed_url)
+        feed = []
+        for entry in rssFeed.entries:
+            new_entry = {}
+            new_entry['title'] = entry.title 
+            new_entry['description'] = entry.summary 
+            published = ''
+            if 'published' in entry:
+                published = entry.published 
+            new_entry['published'] = published
+            image = ''
+            if 'image' in  entry:
+                image = entry.image.href 
+            new_entry['image'] = image
+            new_entry['link'] = entry.link
+            feed.append(new_entry)
+        feed_dict['feed_url'] = feed 
 
+    return jsonify({
+        'success': True, 
+        'feeds': feed_dict
+    })
+
+@app.route('/feeds', methods=['POST'])
+def add_feed(username):
+    try: 
+        data = request.get_json()
+        url = data.get('url', '')
+        user_id = User.query.filter_by(username=username).first().id
+
+        feed = Feed(user_id=user_id, feed_url=url)
+
+        feed.insert()
+
+        feed_urls = Feed.query.filter_by(user_id=user_id).all()        
+        
+        return jsonify({
+            'success': True,
+            'feeds': [feed.url.format() for feed.url in feeds_urls]
+        })
+
+    except Exception as e: 
+        abort(401)
+
+
+
+
+## Error Handling
+'''
+Example error handling for unprocessable entity
+'''
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+                    "success": False,
+                    "error": 422,
+                    "message": "unprocessable"
+                    }), 422
+
+'''
+@DONE implement error handlers using the @app.errorhandler(error) decorator
+    each error handler should return (with approprate messages):
+             jsonify({
+                    "success": False,
+                    "error": 404,
+                    "message": "resource not found"
+                    }), 404
+
+'''
+
+
+'''
+@TODO implement error handler for 404
+    error handler should conform to general task above
+'''
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+                    "success": False,
+                    "error": 404,
+                    "message": "resource not found"
+                    }), 404
+
+'''
+@TODO implement error handler for AuthError
+    error handler should conform to general task above
+'''
+# @app.errorhandler(AuthError)
+# def auth_error(error):
+#     error_details = error.error
+#     error_status_code = error.status_code 
+
+#     return jsonify({
+#                     "success": False,
+#                     "error": error_status_code,
+#                     "message": error_details['description']
+#                     }), error_status_code
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
