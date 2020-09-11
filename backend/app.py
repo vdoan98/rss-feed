@@ -1,6 +1,8 @@
 import json
 import os 
 from flask import Flask, redirect, request, url_for
+import feedparser
+from feedparser import parse
 
 from flask_login import (
     LoginManager,
@@ -71,3 +73,27 @@ def login():
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
+
+
+'''TODO: Add more on login'''
+
+
+@app.route('/feed')
+def feed():
+    #TODO: real time update
+    feed_url = request.get_json() #Not correct
+    RSSFeed = parse(feed_url)
+
+    feed_dict = {}
+
+    for i in range(len(RSSFeed.entries)):
+        feed_list = []
+        feed_list.append(RSSFeed.entries[i].title)
+        feed_list.append(RSSFeed.entries[i].link)
+        feed_list.append(RSSFeed.entries[i].summary)
+        published = RSSFeed.entries[i].published
+        feed_list.append(published[:len(published)-6])
+        feed_dict[i] = feed_list
+    
+    return feed_dict
+

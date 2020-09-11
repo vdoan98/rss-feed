@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+// import { RSS, RssService } from 'src/app/rss.service';
 
 @Component({
   selector: 'app-feed',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit {
+  // @Input() rss: RSS;
 
-  constructor() { }
+  links: string[] = []
+ 
+  constructor(
+    // private RssService: RssService
+  ) { }
 
   ngOnInit(): void {
   }
+
 
 }
