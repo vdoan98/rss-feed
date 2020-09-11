@@ -6,3 +6,23 @@
     <button (click)="addFeedUrl()">Add to Feed</button>
     <p>url:={{ link }}</p>
 </div>
+<div>
+    <mat-spinner *ngIf="feeds.length === 0"></mat-spinner>
+
+    <mat-card *ngFor="let feed of feeds" style="margin-top:10px;">
+        <mat-card-header>
+            <mat-card-title> {{feed.title}} </mat-card-title>
+            <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p>
+                {{feed.description }}
+            </p>
+            <img src="height: 100%; width: 100%" src="{{ feed.image }}">
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button> <a href="{{feed.link}}"> Go to article </a> </button>
+        </mat-card-actions>
+
+    </mat-card>
+</div>

@@ -14,18 +14,18 @@ export class FeedMenuComponent implements OnInit {
   feeds = [];
 
   constructor(
-    private rssService: RssService
+    // private rssService: RssService
   ) { }
 
   ngOnInit(): void {
-    this.rssService.get().subscribe((data: any[]) => {
-      console.log(data);
-      this.feeds = data;
-    })
+    // this.rssService.get().subscribe((data: any[]) => {
+    //   console.log(data);
+    //   this.feeds = data;
+    // })
   }
   
   addFeedUrl(){
-    this.rssService.post(this.rss)
+    //this.rssService.post(this.rss)
   }
 
 }
