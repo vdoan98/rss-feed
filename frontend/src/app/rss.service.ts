@@ -20,7 +20,7 @@ export interface RSS {
 })
 export class RssService {
 
-  private SERVER_URL = 'http://0.0.0.0:5000/';
+  private SERVER_URL = 'http://0.0.0.0:5000';
 
   public items: {[key:number]: RSS} = {};
 
