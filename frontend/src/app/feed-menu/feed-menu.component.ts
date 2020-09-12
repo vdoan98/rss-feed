@@ -12,6 +12,10 @@ export class FeedMenuComponent implements OnInit {
 
   link: string = "";
   feeds = [];
+  events: string[] = [];
+  opened: boolean;
+
+  shouldRun = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
 
   constructor(
     private rssService: RssService

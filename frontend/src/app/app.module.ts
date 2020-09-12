@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -21,6 +21,7 @@ import { HomeComponent } from './home/home.component';
 import { FeedComponent } from './feed/feed.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeedMenuComponent } from './feed-menu/feed-menu.component';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { FeedMenuComponent } from './feed-menu/feed-menu.component';
     AppComponent,
     FeedComponent,
     HomeComponent,
-    FeedMenuComponent
+    FeedMenuComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +45,7 @@ import { FeedMenuComponent } from './feed-menu/feed-menu.component';
     MatButtonModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatSidenavModule,
     HttpClientModule
   ],
   providers: [],
