@@ -12,9 +12,10 @@ def setup_db(app):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
+    db.create_all()
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False)
@@ -46,12 +47,12 @@ class Feed(db.Model):
     __tablename__ = 'feed'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     feed_url = Column(String, nullable=False)
 
     def __init__(self, user_id, feed_url):
-        self.user_id = username 
-        self.feed_url = password
+        self.user_id = user_id 
+        self.feed_url = feed_url
 
     def insert(self):
         db.session.add(self)
