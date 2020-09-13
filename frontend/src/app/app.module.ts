@@ -13,7 +13,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,6 +47,8 @@ import { LoginComponent } from './login/login.component';
     MatCardModule,
     MatProgressSpinnerModule,
     MatSidenavModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   providers: [],

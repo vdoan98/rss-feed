@@ -1,8 +1,11 @@
 import json
 import os 
 from flask import Flask, redirect, request, url_for, request, jsonify, abort
+from flask_login import LoginManager, UserMixin, login_user, logout_user,\
+    current_user
 import feedparser
 from src.models import setup_db, User, Feed
+from src.auth import OAuthSignIn
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -14,16 +17,44 @@ def create_app(test_config=None):
         return response
 
     setup_db(app)
+    lm = LoginManager(app)
+    lm.login_view = 'index'
 
-    @app.route('/login', methods=['GET'])
-    def login():
-        #login_data = request.get_json()
+    @lm.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
 
-        return 
+    @app.route('/')
+    def index():
+        return 'Welcome to Rss Feed.'
 
-    @app.route('/signup', methods=['POST'])
-    def signup():
-        return 
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        return redirect(url_for('index'))
+
+    @app.route('/authorize/<provider>')
+    def oauth_authorize(provider):
+        if not current_user.is_anonymous():
+            return redirect(url_for('index'))
+        oauth = OAuthSignIn.get_provider(provider)
+        return oauth.authorize()
+    
+    @app.route('/callback/<provider>')
+    def oauth_callback(provider):
+        if not current_user.is_anonymous():
+            return redirect(url_for('index'))
+        oauth = OAuthSignIn.get_provider(provider)
+        social_id, username, email = oauth.callback()
+        if social_id is None:
+            flash('Authentication failed.')
+            return redirect(url_for('index'))
+        user = User.query.filter_by(social_id=social_id).first()
+        if not user:
+            user = User(social_id=social_id, nickname=username, email=email)
+            user.insert()
+        login_user(user, True)
+        return redirect(url_for('index'))
 
     @app.route('/feeds', methods=['GET'])
     def get_feed(username):
@@ -159,4 +190,4 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
