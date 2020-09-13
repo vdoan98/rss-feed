@@ -33,6 +33,22 @@ def create_app(test_config=None):
         logout_user()
         return redirect(url_for('index'))
 
+    @app.route('/api/register', methods=['POST'])
+    def register():
+        json_data = request.json 
+        user = User(social_id=json_data['username'], nickname=json_data['name'], email=json_data['email'], password=json_data['password'])
+        try:
+            user.insert()
+            success=True
+            message='success'
+        except:
+            message='this user is already registered'
+            success=False
+        return jsonify({
+            'success': success,
+            'message': message  
+        })
+
     @app.route('/authorize/<provider>')
     def oauth_authorize(provider):
         if not current_user.is_anonymous():

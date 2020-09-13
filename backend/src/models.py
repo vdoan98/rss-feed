@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
+from flask_migrate import Migrate
 import json 
 
 database_name = "rssfeed"
@@ -16,14 +17,16 @@ def setup_db(app):
     lm = LoginManager(app)
     db.init_app(app)
     db.create_all()
+    migrate = Migrate(app, db)
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    social_id = dbColumn(db.String(64), nullable=False, unique=True)
+    social_id = db.Column(db.String(64), nullable=False, unique=True)
     nickname = db.Column(db.String(64), nullable=False)
-    email = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(64), nullable=False, unique=True)
+    password = db.Column(db.String(64), nullable=False)
 
     def insert(self):
         db.session.add(self)
