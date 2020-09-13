@@ -4,7 +4,7 @@
     <section class="signin">
         <div class="container">
             <div class="signin-content">
-                <div class="signin-form">
+                <!-- <div class="signin-form">
                     <h2 class="form-title">Sign In</h2>
                     <form action="" class="register-form" id="login-form">
                         <mat-form-field appearance="fill" class="form-group">
@@ -19,24 +19,35 @@
                             </button>
                             </mat-form-field>
                     </form>
-                </div>
-
-                <div class="signin-image">
-                    <figure><img src="../../assets/signin-image.jpg" alt="sign in image"></figure>
-                </div>
+                </div> -->
+                <mat-card>
+                    <mat-card-content>
+                        <button (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</button>
+                        <button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button>
+                    </mat-card-content>
+                    <!-- <div class="signin-image">
+                        <figure><img src="../../assets/signin-image.jpg" alt="sign in image"></figure>
+                    </div> -->
+                </mat-card>
+                <!-- <mat-card>
+                    <mat-card-content>
+                        <button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button>
+                    </mat-card-content>
+                    <div class="signin-image">
+                        <figure><img src="../../assets/signup-image.jpg" alt="sign up image"></figure>
+                    </div>
+                </mat-card> -->
             </div>
         </div>
     </section>
 
     <!-- Sign Up Form  -->
-    <section class="signup">
+    <!-- <section class="signup">
         <div class="container">
-
-            <div class="signin-image">
-                <figure><img src="../../assets/signup-image.jpg" alt="sign up image"></figure>
-            </div>
-
             <div class="signup-content">
+                <div class="signin-image">
+                    <figure><img src="../../assets/signup-image.jpg" alt="sign up image"></figure>
+                </div>
                 <div class="singup-content">
                     <div class="signup-form">
                         <h2 class="form-title">Sign Up</h2>
@@ -64,5 +75,5 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 </div>

@@ -23,6 +23,7 @@ import { FeedComponent } from './feed/feed.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeedMenuComponent } from './feed-menu/feed-menu.component';
 import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { LoginComponent } from './login/login.component';
     FeedComponent,
     HomeComponent,
     FeedMenuComponent,
-    LoginComponent
+    LoginComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

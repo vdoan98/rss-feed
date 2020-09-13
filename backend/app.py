@@ -5,7 +5,6 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user,\
     current_user
 import feedparser
 from src.models import setup_db, User, Feed
-from src.auth import OAuthSignIn
 from src.config import BaseConfig
 
 
@@ -30,11 +29,6 @@ def create_app(test_config=None):
     @app.route('/')
     def index():
         return 'Welcome to Rss Feed.'
-
-    @app.route('/logout')
-    def logout():
-        logout_user()
-        return redirect(url_for('index'))
 
     @app.route('/api/register', methods=['POST'])
     def register():
@@ -64,30 +58,15 @@ def create_app(test_config=None):
             success = False 
         return jsonify({'result': success})
 
-    @app.route('/authorize/<provider>')
-    def oauth_authorize(provider):
-        if not current_user.is_anonymous():
-            return redirect(url_for('index'))
-        oauth = OAuthSignIn.get_provider(provider)
-        return oauth.authorize()
-    
-    @app.route('/callback/<provider>')
-    def oauth_callback(provider):
-        if not current_user.is_anonymous():
-            return redirect(url_for('index'))
-        oauth = OAuthSignIn.get_provider(provider)
-        social_id, username, email = oauth.callback()
-        if social_id is None:
-            flash('Authentication failed.')
-            return redirect(url_for('index'))
-        user = User.query.filter_by(social_id=social_id).first()
-        if not user:
-            user = User(social_id=social_id, nickname=username, email=email)
-            user.insert()
-        login_user(user, True)
-        return redirect(url_for('index'))
+    @app.route('/api/logout')
+    def logout():
+        session.pop('logged_in', None)
+        return jsonify({
+            'success': True,
+            'messaged': 'successfully logged out'
+        })
 
-    @app.route('/feeds', methods=['GET'])
+    @app.route('/api/feeds', methods=['GET'])
     def get_feed(username):
         #TODO: real time update
         #feed_url = request.get_json() #Not correct
@@ -123,7 +102,7 @@ def create_app(test_config=None):
             'no_feed': feed_count
         })
 
-    @app.route('/feeds', methods=['POST'])
+    @app.route('/api/feeds', methods=['POST'])
     def add_feed(username):
         try: 
             data = request.get_json()
@@ -145,7 +124,7 @@ def create_app(test_config=None):
             abort(401)
 
 
-    @app.route('/feeds/<int:feed_id>', methods=["DELETE"])
+    @app.route('/api/feeds/<int:feed_id>', methods=["DELETE"])
     def delete_feed(username, feed_id):
         user = User.query.filter_by(User.username == username).one_or_none()
         if user is None: 
