@@ -1,14 +1,17 @@
 import json
 import os 
-from flask import Flask, redirect, request, url_for, request, jsonify, abort
+from flask import Flask, redirect, request, url_for, request, jsonify, abort, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user,\
     current_user
 import feedparser
 from src.models import setup_db, User, Feed
 from src.auth import OAuthSignIn
+from src.config import BaseConfig
+
 
 def create_app(test_config=None):
     app = Flask(__name__)
+    app.config.from_object(BaseConfig)
 
     @app.after_request
     def after_request(response):
@@ -39,6 +42,7 @@ def create_app(test_config=None):
         user = User(social_id=json_data['username'], nickname=json_data['name'], email=json_data['email'], password=json_data['password'])
         try:
             user.insert()
+            user.set_password(user.password)
             success=True
             message='success'
         except:
@@ -48,6 +52,17 @@ def create_app(test_config=None):
             'success': success,
             'message': message  
         })
+
+    @app.route('/api/login', methods=['POST'])
+    def login():
+        json_data = request.json 
+        user = User.query.filter_by(social_id=json_data['username']).first()
+        if user and user.check_password(json_data['password']):
+            session['logged_in'] = True 
+            success = True 
+        else:
+            success = False 
+        return jsonify({'result': success})
 
     @app.route('/authorize/<provider>')
     def oauth_authorize(provider):

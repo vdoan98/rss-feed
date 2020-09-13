@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, Integer, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
 from flask_migrate import Migrate
+from werkzeug.security import generate_password_hash, check_password_hash
 import json 
 
 database_name = "rssfeed"
@@ -26,11 +27,23 @@ class User(UserMixin, db.Model):
     social_id = db.Column(db.String(64), nullable=False, unique=True)
     nickname = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False, unique=True)
-    password = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+
+    def __init__(self, social_id, nickname, email, password):
+        self.social_id = social_id
+        self.nickname = nickname
+        self.email = email
+        self.password = generate_password_hash(password)
 
     def insert(self):
         db.session.add(self)
         db.session.commit()
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 class Feed(db.Model):
     __tablename__ = 'feed'
