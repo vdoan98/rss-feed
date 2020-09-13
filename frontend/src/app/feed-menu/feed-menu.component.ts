@@ -29,7 +29,7 @@ export class FeedMenuComponent implements OnInit {
   }
   
   addFeedUrl(){
-    this.rssService.post(this.rss)
+    this.rssService.get()
   }
 
 }

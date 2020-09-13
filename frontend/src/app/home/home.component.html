@@ -7,7 +7,8 @@
               <li><a routerLink="/">Home</a></li>
               <li><a routerLink="/feeds" *ngIf="auth.loggedIn">Feed</a></li>
               <li><a routerLink="/profile" *ngIf="auth.loggedIn">Profile</a></li>
-              <li><a routerLink="/login">Login</a></li>
+              <li><a routerLink="/login" *ngIf="!auth.loggedIn">Login</a></li>
+              <li><a routerLink="/login" *ngIf="auth.loggedIn">Logout</a></li>
             </ul>
           </nav>
         </div>

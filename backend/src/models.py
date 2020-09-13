@@ -24,26 +24,18 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    social_id = db.Column(db.String(64), nullable=True, unique=True)
-    nickname = db.Column(db.String(64), nullable=True)
+    name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
+    picture = db.Column(db.String, nullable=True)
 
-    def __init__(self, social_id, nickname, email, password):
-        self.social_id = social_id
-        self.nickname = nickname
+    def __init__(self, name, email, picture):
+        self.name = name
         self.email = email
-        self.password = generate_password_hash(password)
+        self.picture = picture 
 
     def insert(self):
         db.session.add(self)
         db.session.commit()
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
 
 class Feed(db.Model):
     __tablename__ = 'feed'

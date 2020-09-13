@@ -6,7 +6,8 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user,\
 import feedparser
 from src.models import setup_db, User, Feed
 from src.config import BaseConfig
-
+from authlib.integrations.flask_client import OAuth
+from six.moves.urllib.parse import urlencode
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -19,58 +20,28 @@ def create_app(test_config=None):
         return response
 
     setup_db(app)
-    lm = LoginManager(app)
-    lm.login_view = 'index'
-
-    @lm.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
 
     @app.route('/')
     def index():
         return 'Welcome to Rss Feed.'
 
-    @app.route('/api/register', methods=['POST'])
-    def register():
-        json_data = request.json 
-        user = User(social_id=json_data['username'], nickname=json_data['name'], email=json_data['email'], password=json_data['password'])
-        try:
-            user.insert()
-            user.set_password(user.password)
-            success=True
-            message='success'
-        except:
-            message='this user is already registered'
-            success=False
-        return jsonify({
-            'success': success,
-            'message': message  
-        })
 
-    @app.route('/api/login', methods=['POST'])
-    def login():
-        json_data = request.json 
-        user = User.query.filter_by(social_id=json_data['username']).first()
-        if user and user.check_password(json_data['password']):
-            session['logged_in'] = True 
-            success = True 
-        else:
-            success = False 
-        return jsonify({'result': success})
-
-    @app.route('/api/logout')
-    def logout():
-        session.pop('logged_in', None)
-        return jsonify({
-            'success': True,
-            'messaged': 'successfully logged out'
-        })
-
-    @app.route('/api/feeds', methods=['GET'])
-    def get_feed(username):
+    '''
+    GET request for getting feeds based on user information. 
+    If no user exists, meaning user is new or that user was created prior but never add any rss url 
+    to feed, create new user in database 
+    '''
+    @app.route('/api/feeds', methods=['POST'])
+    def get_feed():
         #TODO: real time update
         #feed_url = request.get_json() #Not correct
-        user_id = User.query.filter_by(User.username == username).first().id
+        search_user = request.get_json()
+        user = User.query.filter_by(User.email == email).one_or_none()
+        if user is None:
+            user = User(name=search_user.get('given_name'),email=search_user.get('email'),picture=search_user.get('picture'))
+
+        user_id = user.id
+
         feed_urls = Feed.query.filter_by(Feed.user_id == user_id).all()
 
         feed_dict = {}

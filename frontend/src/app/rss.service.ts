@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { AuthService } from './auth.service';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
@@ -24,14 +26,14 @@ export class RssService {
 
   public items: {[key:number]: RSS} = {};
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   public get(){
-    return this.http.get(this.SERVER_URL + '/feeds');
+    return this.http.get(this.SERVER_URL + '/api/feeds', {responseType:'json'});
   }
 
   public post(rss: RSS) {
-    this.http.post(this.SERVER_URL + '/feeds', rss)
+    this.http.post(this.SERVER_URL + '/api/feeds', rss)
     .subscribe((res: any) => {
       if (res.success) {
 
