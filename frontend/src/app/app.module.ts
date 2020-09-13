@@ -15,6 +15,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -51,6 +53,8 @@ import { ProfileComponent } from './profile/profile.component';
     MatSidenavModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    MatTabsModule,
+    MatToolbarModule,
     HttpClientModule
   ],
   providers: [],
