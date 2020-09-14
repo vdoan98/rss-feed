@@ -1,46 +1,57 @@
-<div>
-    <!-- <md-sidenav class="md-sidenav-left" md-component-id="left" md-disable-backdrop="" md-whiteframe="4">
-        <md-toolbar class="md-theme-indigo">
-            <img src="../../assets/signin-image.jpg" alt="profile picture">
-        </md-toolbar>
-        <md-content> 
-            <p> Change theme </p>
-            <p> Logout </p>
-        </md-content>
-    </md-sidenav> -->
+<div class="container" [class.is-mobile]>
+    <mat-toolbar color="primary" class="toolbar">
+        <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    </mat-toolbar> 
+    
+    <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0" class="sidenav-container">
+        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]='mobileQuery.matches' fixedTopGap="56"> 
+            <mat-nav-list>
+                <a mat-list-item><img mat-card-avatar src="{{ userprofile.picture }}" alt="user profile"></a>
+                <a mat-list-item> Hello {{ userprofile.given_name }} </a>
+                <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
+            </mat-nav-list>
+        </mat-sidenav>
 
-    <mat-tab-group mat-align-tabs="start">
-      <mat-tab label="Add">
-        <div>
-            <form (ngSubmit)="addFeedUrl()"> 
-                <input type="text" name="url">
-            </form>
-            <button (click)="addFeedUrl()">Add to Feed</button>
-            <p>url:={{ link }}</p>
-        </div>
-      </mat-tab>
-      <mat-tab label="View">
-        <div>
-            <!-- <mat-spinner *ngIf="feeds.length === 0"></mat-spinner> -->
-            <div *ngFor="let feeds of rssService.items | keyvalue">
-                <mat-card *ngFor="let feed of feeds.value" style="margin-top:10px;">
-                <mat-card-header>
-                    <mat-card-title> {{feed.title}} </mat-card-title>
-                    <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>
-                        {{feed.description }}
-                    </p>
-                    <img src="height: 100%; width: 100%" src="{{ feed.image }}">
-                </mat-card-content>
-                <mat-card-actions>
-                    <button mat-button> <a href="{{feed.link}}"> Go to article </a> </button>
-                </mat-card-actions>
-        
-            </mat-card>
-            </div>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
+
+        <mat-sidenav-content>
+            <div class="tab-container">
+                <mat-tab-group mat-align-tabs="start">
+                  <mat-tab label="Add">
+                    <div>
+                        <mat-form-field class="full-width" class="rss-form">
+                            <mat-label>RSS feed</mat-label>
+                            <input matInput placeholder="http://feeds.bbci.co.uk/news/technology/rss.xml" [(ngModel)]='url'>
+                        </mat-form-field>
+                        <button (click)="addFeedUrl()" mat-raised-button color="primary" class="rss-form">Add to Feed</button>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Feed">
+                    <section>
+                        
+                    </section>
+                    <div>
+                        <div *ngFor="let feeds of rssService.items | keyvalue">
+                            <mat-card *ngFor="let feed of feeds.value" style="margin-top:10px;">
+                            <mat-card-header>
+                                <mat-card-title> {{feed.title}} </mat-card-title>
+                                <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <p>
+                                    {{feed.description }}
+                                </p>
+                                <img src="height: 100%; width: 100%" src="{{ feed.image }}">
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button mat-button> <a href="{{feed.link}}"> Go to article </a> </button>
+                            </mat-card-actions>
+                    
+                        </mat-card>
+                        </div>
+                    </div>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { RssService, RSS } from 'src/app/rss.service';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-feed-menu',
@@ -10,22 +12,38 @@ import { RssService, RSS } from 'src/app/rss.service';
 export class FeedMenuComponent implements OnInit {
   @Input() rss: RSS;
 
-  link: string = "";
-  events: string[] = [];
+  url: string = "";
   opened: boolean;
+  mobileQuery: MediaQueryList;
+  userprofile: any;
 
-  shouldRun = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
+  private _mobileQueryListener:() => void;
 
   constructor(
-    private rssService: RssService
-  ) { }
+    public rssService: RssService,
+    public auth: AuthService,
+    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher
+  ) { 
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
+  ngOnDestroy(): void {
+    this.mobileQuery.removeListener(this._mobileQueryListener);
+  }
 
   feeds: any;
 
   ngOnInit(): void {
     this.rssService.get()
-    console.log(this.rssService.items)
+    this.auth.userProfile$.subscribe(val => this.userprofile = val)
+    //console.log(this.rssService.itemsNoCategory)
   }
-  
+
+  addFeedUrl(){
+    console.log(this.url)
+    this.rssService.post(this.url)
+  }
 
 }

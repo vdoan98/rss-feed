@@ -16,6 +16,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -55,6 +56,7 @@ import { ProfileComponent } from './profile/profile.component';
     ReactiveFormsModule,
     MatTabsModule,
     MatToolbarModule,
+    MatPaginatorModule,
     HttpClientModule
   ],
   providers: [],
