@@ -86,6 +86,16 @@ def get_feed():
         'user_id': user_id
     })
 
+@app.route('/api/urls', methods=['POST'])
+def get_url():
+    data = request.get_json()
+    user_id = User.query.filter(User.email == data.get('email')).first().id
+    check_feed = Feed.query.filter(Feed.user_id == user_id).all()
+
+    return jsonify({
+        'success': True,
+        'urls': [url.format() for url in check_feed]
+    })
 
 '''
 request json format:
@@ -122,17 +132,18 @@ request json format:
 '''
 @app.route('/api/feeds/<int:feed_id>', methods=["DELETE"])
 def delete_feed(feed_id):
-    data = request.get_json()
-    user = User.query.filter(User.email == data.get('email', '')).first()
-    if user is None: 
-        return jsonify({
-            'success': False,
-            'message': 'User doesn\'t exist'
-        })
+    # data = request.get_json()
+    # user = User.query.filter(User.email == data.get('email', '')).first()
+    # if user is None: 
+    #     return jsonify({
+    #         'success': False,
+    #         'message': 'User doesn\'t exist'
+    #     })
 
     feed = Feed.query.filter(Feed.id == feed_id).first()
 
     feed_id = feed.id
+    print(feed_id)
     feed.delete()
 
     return jsonify({

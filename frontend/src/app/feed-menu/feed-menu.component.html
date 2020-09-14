@@ -26,11 +26,15 @@
                         <button (click)="addFeedUrl()" mat-raised-button color="primary" class="rss-form">Add to Feed</button>
                     </div>
                     <div>
-                        <mat-selection-list>
-                            <mat-list-option *ngFor="let key of rssService.urlList">
-                                {{ key }}
+                        <mat-selection-list #urls [(ngModel)]="selectedUrls">
+                            <mat-list-option *ngFor="let key of rssService.urlList" [value]="key.id">
+                                {{ key.feed_url }}
                             </mat-list-option>
+                            <button (click)="deleteFeedUrl()" mat-raised-button color="primary"> Delete from Feed </button>
                         </mat-selection-list>
+                        <p>
+                            Options selected: {{ selectedUrls }}
+                        </p>
                     </div>
                   </mat-tab>
                   <mat-tab label="Feed">

@@ -20,6 +20,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
   titleSort: boolean = false;
   dateSort: boolean = false;
   descriptionSort: boolean = false;
+  selectedUrls: string[];
 
   private _mobileQueryListener:() => void;
 
@@ -41,13 +42,19 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.rssService.get()
+    this.rssService.getUrl()
     this.auth.userProfile$.subscribe(val => this.userprofile = val)
     console.log(this.rssService.urlList)
   }
 
   addFeedUrl(){
-    console.log(this.url)
     this.rssService.post(this.url)
+  }
+
+  deleteFeedUrl(){
+    for (let url of this.selectedUrls){
+      this.rssService.delete(url);
+    }
   }
 
   sortTitle(value){

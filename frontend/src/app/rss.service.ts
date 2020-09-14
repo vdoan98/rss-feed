@@ -39,9 +39,20 @@ export class RssService {
     this.auth.userProfile$.subscribe(val => this.userprofile = val)
     this.http.post(this.SERVER_URL + '/api/feeds', this.userprofile).
     subscribe((res: any) => {
+      this.itemsNoCategory = []
+      this.items = {}
       this.feedsToItems(res['feeds'])
-      //console.log(this.items)
-      console.log(this.itemsNoCategory)
+    })
+  }
+
+  public getUrl(){
+    this.auth.userProfile$.subscribe(val => this.userprofile = val)
+    let data = {}
+    data["email"] = this.userprofile["email"]
+    this.http.post(this.SERVER_URL + '/api/urls', data).
+    subscribe((res: any) => {
+      this.urlList = []
+      this.urlsToItems(res['urls'])
     })
   }
   
@@ -53,25 +64,37 @@ export class RssService {
     data["url"] = url
     this.http.post(this.SERVER_URL + '/api/feeds/add', data).
     subscribe((res: any) => {
+      this.itemsNoCategory = []
       this.get()
     })
   }
 
-  // public delete(rss: RSS){
-  //   return this.http.delete(this.url + '/api/feeds/' + rss.id, {
-  //     email: this.auth.userProfile$.email
-  //   })
-  // }
+
+  public delete(url_id: string){
+    this.http.delete(this.SERVER_URL + '/api/feeds/' + url_id).
+    subscribe((res: any) => {
+      this.itemsNoCategory = []
+      this.items = {}
+      this.itemsNoCategory = []
+      this.get()
+      this.getUrl()
+    })
+  }
 
   feedsToItems( feed : Array<RSS>) {
     for (let key of Object.keys(feed)){
       this.items[key] = feed[key]
-      this.urlList.push(key)
       for (let item of feed[key]){
         this.itemsNoCategory.push(item)
       }
     }
     this.sortByDate()
+  }
+
+  urlsToItems( urls: Array<string>){
+    for (let url of urls){
+      this.urlList.push(url)
+    }
   }
 
   sortByDate(reverse:boolean = false){
