@@ -5,13 +5,12 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user,\
     current_user
 import feedparser
 from src.models import setup_db, User, Feed
-from src.config import BaseConfig
+from src.config import CLIENT_ID, CLIENT_SECRET, API_URL, ACCESS_TOKEN, AUTHORIZE_URL
 from authlib.integrations.flask_client import OAuth
 from six.moves.urllib.parse import urlencode
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    app.config.from_object(BaseConfig)
 
     @app.after_request
     def after_request(response):
@@ -26,23 +25,26 @@ def create_app(test_config=None):
         return 'Welcome to Rss Feed.'
 
 
+
     '''
     GET request for getting feeds based on user information. 
     If no user exists, meaning user is new or that user was created prior but never add any rss url 
     to feed, create new user in database 
     '''
-    @app.route('/api/feeds', methods=['POST'])
+    @app.route('/api/feeds', methods=['GET'])
     def get_feed():
         #TODO: real time update
         #feed_url = request.get_json() #Not correct
         search_user = request.get_json()
-        user = User.query.filter_by(User.email == email).one_or_none()
+        user = User.query.filter(User.email == search_user['email']).first()
+        print(user)
         if user is None:
             user = User(name=search_user.get('given_name'),email=search_user.get('email'),picture=search_user.get('picture'))
+            user.insert()
 
         user_id = user.id
 
-        feed_urls = Feed.query.filter_by(Feed.user_id == user_id).all()
+        feed_urls = Feed.query.filter(Feed.user_id == user_id).all()
 
         feed_dict = {}
         feed_count = 0
@@ -70,38 +72,40 @@ def create_app(test_config=None):
         return jsonify({
             'success': True, 
             'feeds': feed_dict,
-            'no_feed': feed_count
+            'no_feed': feed_count,
+            'user_id': user_id
         })
 
     @app.route('/api/feeds', methods=['POST'])
-    def add_feed(username):
-        try: 
-            data = request.get_json()
-            url = data.get('url', '')
-            user_id = User.query.filter_by(User.username == username).first().id
-
+    def add_feed():
+        data = request.get_json()
+        url = data.get('url', '')
+        print(url)
+        user_id = User.query.filter(User.email == data.get('email')).first().id
+        check_feed = Feed.query.filter(Feed.user_id == user_id).filter(Feed.feed_url == url).first()
+        
+        if check_feed is None:
             feed = Feed(user_id=user_id, feed_url=url)
-
             feed.insert()
 
-            feed_urls = Feed.query.filter_by(Feed.user_id == user_id).all()        
+        feed_urls = Feed.query.filter(Feed.user_id == user_id).all()        
             
-            return jsonify({
-                'success': True,
-                'feeds': [feed.url.format() for feed.url in feeds_urls]
-            })
-
-        except Exception as e: 
-            abort(401)
-
+        return jsonify({
+            'success': True,
+            'feeds': [i.format() for i in feed_urls]
+        })
 
     @app.route('/api/feeds/<int:feed_id>', methods=["DELETE"])
-    def delete_feed(username, feed_id):
-        user = User.query.filter_by(User.username == username).one_or_none()
+    def delete_feed(feed_id):
+        data = request.get_json()
+        user = User.query.filter(User.email == data.get('email', '')).first()
         if user is None: 
-            abort(422)
+            return jsonify({
+                'success': False,
+                'message': 'User doesn\'t exist'
+            })
 
-        feed = Feed.query.filter_by(Feed.id == feed_id).first()
+        feed = Feed.query.filter(Feed.id == feed_id).first()
 
         feed_id = feed.id
         feed.delete()

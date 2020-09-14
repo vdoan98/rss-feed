@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
 
   //   return this.email.hasError('email') ? 'Not a valid email' : '';
   // }
-
+  
   constructor(public auth: AuthService) { }
 
   ngOnInit(): void {

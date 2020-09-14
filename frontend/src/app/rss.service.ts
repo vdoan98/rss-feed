@@ -22,7 +22,7 @@ export interface RSS {
 })
 export class RssService {
 
-  private SERVER_URL = 'http://0.0.0.0:5000';
+  private SERVER_URL = 'http://localhost:5000/';
 
 
   public feeds: [
@@ -114,16 +114,9 @@ export class RssService {
   constructor(private http: HttpClient, private auth: AuthService) { }
 
   public get(){
-    return this.http.get(this.SERVER_URL + '/api/feeds', {responseType:'json'});
   }
 
   public post(rss: RSS) {
-    this.http.post(this.SERVER_URL + '/api/feeds', rss)
-    .subscribe((res: any) => {
-      if (res.success) {
-
-      }
-    })
   }
 
 }
