@@ -9,9 +9,12 @@ import { AuthService } from '../auth.service';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(public auth: AuthService) { }
+  token: string = this.auth.activeJWT()
+
+  constructor(private auth: AuthService) { }
 
   ngOnInit(): void {
+    console.log(this.token)
   }
 
 }

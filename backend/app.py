@@ -7,192 +7,162 @@ import feedparser
 from src.models import setup_db, User, Feed
 from src.config import CLIENT_ID, CLIENT_SECRET, API_URL, ACCESS_TOKEN, AUTHORIZE_URL
 from authlib.integrations.flask_client import OAuth
+from flask_cors import CORS
 from six.moves.urllib.parse import urlencode
 
-def create_app(test_config=None):
-    app = Flask(__name__)
-
-    @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
-        return response
-
-    setup_db(app)
-
-    @app.route('/')
-    def index():
-        return 'Welcome to Rss Feed.'
+app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+    return response
 
-    '''
-    GET request for getting feeds based on user information. 
-    If no user exists, meaning user is new or that user was created prior but never add any rss url 
-    to feed, create new user in database 
-    request json format:
-        {
-            "given_name": "Mr. Test",
-            "email": "test@test.com",
-            "picture": "picture_link"
-        }
-    '''
-    @app.route('/api/feeds', methods=['POST'])
-    def get_feed():
-        #TODO: real time update
-        #feed_url = request.get_json() #Not correct
-        search_user = request.get_json()
-        user = User.query.filter(User.email == search_user['email']).first()
-        print(user)
-        if user is None:
-            user = User(name=search_user.get('given_name'),email=search_user.get('email'),picture=search_user.get('picture'))
-            user.insert()
+setup_db(app)
 
-        user_id = user.id
-
-        feed_urls = Feed.query.filter(Feed.user_id == user_id).all()
-
-        feed_dict = {}
-        feed_count = 0
-
-        for rss in feed_urls:
-            rssFeed = feedparser.parse(rss.feed_url)
-            feed = []
-            for entry in rssFeed.entries:
-                new_entry = {}
-                new_entry['title'] = entry.title 
-                new_entry['description'] = entry.summary 
-                published = ''
-                if 'published' in entry:
-                    published = entry.published 
-                new_entry['published'] = published
-                image = ''
-                if 'image' in  entry:
-                    image = entry.image.href 
-                new_entry['image'] = image
-                new_entry['link'] = entry.link
-                feed.append(new_entry)
-            feed_dict['feed_url'] = feed 
-            feed_count += 1
-
-        return jsonify({
-            'success': True, 
-            'feeds': feed_dict,
-            'no_feed': feed_count,
-            'user_id': user_id
-        })
+@app.route('/')
+def index():
+    return 'Welcome to Rss Feed.'
 
 
-    '''
-    request json format:
-        {
-            "url": "rss_feed_url",
-            "email": "test@test.com"
-        }
-    '''
-    @app.route('/api/feeds/add', methods=['POST'])
-    def add_feed():
-        data = request.get_json()
-        url = data.get('url', '')
-        print(url)
-        user_id = User.query.filter(User.email == data.get('email')).first().id
-        check_feed = Feed.query.filter(Feed.user_id == user_id).filter(Feed.feed_url == url).first()
+
+'''
+GET request for getting feeds based on user information. 
+If no user exists, meaning user is new or that user was created prior but never add any rss url 
+to feed, create new user in database 
+request json format:
+    {
+        "given_name": "Mr. Test",
+        "email": "test@test.com",
+        "picture": "picture_link"
+    }
+'''
+@app.route('/api/feeds', methods=['POST'])
+def get_feed():
+    #TODO: real time update
+    #feed_url = request.get_json() #Not correct
+    search_user = request.get_json()
+    print(search_user)
+    user = User.query.filter(User.email == search_user['email']).first()
+    print(user)
+    if user is None:
+        user = User(name=search_user.get('given_name'),email=search_user.get('email'),picture=search_user.get('picture'))
+        user.insert()
+
+    user_id = user.id
+
+    feed_urls = Feed.query.filter(Feed.user_id == user_id).all()
+
+    feed_dict = {}
+    feed_count = 0
+
+    for rss in feed_urls:
+        rssFeed = feedparser.parse(rss.feed_url)
+        feed = []
+        for entry in rssFeed.entries:
+            new_entry = {}
+            new_entry['title'] = entry.title 
+            new_entry['description'] = entry.summary 
+            published = ''
+            if 'published' in entry:
+                published = entry.published 
+            new_entry['published'] = published
+            image = ''
+            if 'image' in  entry:
+                image = entry.image.href 
+            new_entry['image'] = image
+            new_entry['link'] = entry.link
+            feed.append(new_entry)
+        feed_dict[rss.id] = feed 
+        feed_count += 1
+
+    return jsonify({
+        'success': True, 
+        'feeds': feed_dict,
+        'no_feed': feed_count,
+        'user_id': user_id
+    })
+
+
+'''
+request json format:
+    {
+        "url": "rss_feed_url",
+        "email": "test@test.com"
+    }
+'''
+@app.route('/api/feeds/add', methods=['POST'])
+def add_feed():
+    data = request.get_json()
+    url = data.get('url', '')
+    print(url)
+    user_id = User.query.filter(User.email == data.get('email')).first().id
+    check_feed = Feed.query.filter(Feed.user_id == user_id).filter(Feed.feed_url == url).first()
         
-        if check_feed is None:
-            feed = Feed(user_id=user_id, feed_url=url)
-            feed.insert()
+    if check_feed is None:
+        feed = Feed(user_id=user_id, feed_url=url)
+        feed.insert()
 
-        feed_urls = Feed.query.filter(Feed.user_id == user_id).all()        
+    feed_urls = Feed.query.filter(Feed.user_id == user_id).all()        
             
+    return jsonify({
+        'success': True,
+        'feeds': [i.format() for i in feed_urls]
+    })
+
+
+'''
+request json format:
+    {
+        "email": "test@test.com"
+    }
+'''
+@app.route('/api/feeds/<int:feed_id>', methods=["DELETE"])
+def delete_feed(feed_id):
+    data = request.get_json()
+    user = User.query.filter(User.email == data.get('email', '')).first()
+    if user is None: 
         return jsonify({
-            'success': True,
-            'feeds': [i.format() for i in feed_urls]
+            'success': False,
+            'message': 'User doesn\'t exist'
         })
 
+    feed = Feed.query.filter(Feed.id == feed_id).first()
 
-    '''
-    request json format:
-        {
-            "email": "test@test.com"
-        }
-    '''
-    @app.route('/api/feeds/<int:feed_id>', methods=["DELETE"])
-    def delete_feed(feed_id):
-        data = request.get_json()
-        user = User.query.filter(User.email == data.get('email', '')).first()
-        if user is None: 
-            return jsonify({
-                'success': False,
-                'message': 'User doesn\'t exist'
-            })
+    feed_id = feed.id
+    feed.delete()
 
-        feed = Feed.query.filter(Feed.id == feed_id).first()
-
-        feed_id = feed.id
-        feed.delete()
-
-        return jsonify({
-            'success': True, 
-            'deleted': feed_id
-        })
+    return jsonify({
+        'success': True, 
+        'deleted': feed_id
+    })
 
 
 
-    ## Error Handling
-    '''
-    Example error handling for unprocessable entity
-    '''
-    @app.errorhandler(422)
-    def unprocessable(error):
-        return jsonify({
-                        "success": False,
-                        "error": 422,
-                        "message": "unprocessable"
-                        }), 422
-
-    '''
-    @DONE implement error handlers using the @app.errorhandler(error) decorator
-        each error handler should return (with approprate messages):
-                jsonify({
-                        "success": False,
-                        "error": 404,
-                        "message": "resource not found"
-                        }), 404
-
-    '''
+## Error Handling
+'''
+Example error handling for unprocessable entity
+'''
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
 
 
-    '''
-    @TODO implement error handler for 404
-        error handler should conform to general task above
-    '''
 
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({
-                        "success": False,
-                        "error": 404,
-                        "message": "resource not found"
-                        }), 404
-
-    '''
-    @TODO implement error handler for AuthError
-        error handler should conform to general task above
-    '''
-    # @app.errorhandler(AuthError)
-    # def auth_error(error):
-    #     error_details = error.error
-    #     error_status_code = error.status_code 
-
-    #     return jsonify({
-    #                     "success": False,
-    #                     "error": error_status_code,
-    #                     "message": error_details['description']
-    #                     }), error_status_code
-
-    return app
-
-app = create_app()
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
 
 
 if __name__ == "__main__":

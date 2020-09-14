@@ -4,7 +4,10 @@ import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { from, of, Observable, BehaviorSubject, combineLatest, throwError } from 'rxjs';
 import { tap, catchError, concatMap, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
+
+const JWTS_LOCAL_KEY = 'JWTS_LOCAL_KEY';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +40,9 @@ export class AuthService {
   userProfile$ = this.userProfileSubject$.asObservable();
   // Create a local property for login status
   loggedIn: boolean = null;
+
+  token: string;
+  payload: any;
 
   constructor(private router: Router) {
     // On initial load, check authentication state with authorization server
@@ -122,6 +128,42 @@ export class AuthService {
         returnTo: `${window.location.origin}`
       });
     });
+  }
+
+  check_token_fragment() {
+    // parse the fragment
+    const fragment = window.location.hash.substr(1).split('&')[0].split('=');
+    // check if the fragment includes the access token
+    if ( fragment[0] === 'access_token' ) {
+      // add the access token to the jwt
+      this.token = fragment[1];
+      // save jwts to localstore
+      this.set_jwt();
+    }
+  }
+
+  set_jwt() {
+    localStorage.setItem(JWTS_LOCAL_KEY, this.token);
+    if (this.token) {
+      this.decodeJWT(this.token);
+    }
+  }
+
+  load_jwts() {
+    this.token = localStorage.getItem(JWTS_LOCAL_KEY) || null;
+    if (this.token) {
+      this.decodeJWT(this.token);
+    }
+  }
+
+  activeJWT() {
+    return this.token;
+  }
+
+  decodeJWT(token: string) {
+    const jwtservice = new JwtHelperService();
+    this.payload = jwtservice.decodeToken(token);
+    return this.payload;
   }
 
 }

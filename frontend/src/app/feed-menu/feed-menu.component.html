@@ -22,8 +22,8 @@
       <mat-tab label="View">
         <div>
             <!-- <mat-spinner *ngIf="feeds.length === 0"></mat-spinner> -->
-        
-            <mat-card *ngFor="let feed of feeds" style="margin-top:10px;">
+            <div *ngFor="let feeds of Object.keys(rssService.items)">
+                <mat-card *ngFor="feed in feeds" style="margin-top:10px;">
                 <mat-card-header>
                     <mat-card-title> {{feed.title}} </mat-card-title>
                     <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
@@ -39,6 +39,7 @@
                 </mat-card-actions>
         
             </mat-card>
+            </div>
         </div>
       </mat-tab>
     </mat-tab-group>
