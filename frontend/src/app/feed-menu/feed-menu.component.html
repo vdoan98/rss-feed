@@ -9,7 +9,7 @@
                 <a mat-list-item><img mat-card-avatar src="{{ userprofile.picture }}" alt="user profile"></a>
                 <a mat-list-item> Hello {{ userprofile.given_name }} </a>
                 <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
-                <a mat-list-item><mat-icon>invert_colors</mat-icon></a>
+                <a mat-list-item><button mat-button>Ghiblified</button></a>
             </mat-nav-list>
         </mat-sidenav>
 
@@ -36,19 +36,19 @@
                   <mat-tab label="Feed">
                     <div class="feed-containers">
                         Title:
-                        <mat-button-toggle-group name="titleSort">
-                            <mat-button-toggle value="ascending">A-Z</mat-button-toggle>
-                            <mat-button-toggle value="descending">Z-A</mat-button-toggle>
+                        <mat-button-toggle-group name="titleSort" [value]="titleSort" (change)="sortTitle($event.value)">
+                            <mat-button-toggle [value]="false">A-Z</mat-button-toggle>
+                            <mat-button-toggle [value]="true">Z-A</mat-button-toggle>
                         </mat-button-toggle-group>
                         Published date: 
-                        <mat-button-toggle-group name="dateSort">
-                            <mat-button-toggle value="newest">Newest</mat-button-toggle>
-                            <mat-button-toggle value="oldest">Oldest</mat-button-toggle>
+                        <mat-button-toggle-group name="dateSort" [value]="dateSort" (change)="sortDate($event.value)">
+                            <mat-button-toggle [value]="false">Newest</mat-button-toggle>
+                            <mat-button-toggle [value]="true">Oldest</mat-button-toggle>
                         </mat-button-toggle-group>
                         Description:
-                        <mat-button-toggle-group name="descriptionSort">
-                            <mat-button-toggle value="ascendingDesc">A-Z</mat-button-toggle>
-                            <mat-button-toggle value="ascendingDesc">Z-A</mat-button-toggle>
+                        <mat-button-toggle-group name="descriptionSort" [value]="descriptionSort" (change)="sortDescription($event.value)">
+                            <mat-button-toggle [value]="false">A-Z</mat-button-toggle>
+                            <mat-button-toggle [value]="true">Z-A</mat-button-toggle>
                         </mat-button-toggle-group>
                     </div>
                     <div class="feed-containers">
@@ -94,3 +94,6 @@
         </mat-sidenav-content>
     </mat-sidenav-container>
 </div>
+
+<div>Icons Totoro by Nithin Davis Nanthikkara from the Noun Project</div>
+

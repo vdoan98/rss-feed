@@ -4,6 +4,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AuthService } from '../auth.service';
 import { DatePipe } from '@angular/common';
 
+
 @Component({
   selector: 'app-feed-menu',
   templateUrl: './feed-menu.component.html',
@@ -16,9 +17,9 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
   opened: boolean;
   mobileQuery: MediaQueryList;
   userprofile: any;
-  titleAsc: boolean = true;
-  dateAsc: boolean = true;
-  descAsc: boolean = true;
+  titleSort: boolean = false;
+  dateSort: boolean = false;
+  descriptionSort: boolean = false;
 
   private _mobileQueryListener:() => void;
 
@@ -47,6 +48,21 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
   addFeedUrl(){
     console.log(this.url)
     this.rssService.post(this.url)
+  }
+
+  sortTitle(value){
+    this.titleSort = value
+    this.rssService.sortByTitle(this.titleSort)
+  }
+
+  sortDate(value){
+    this.dateSort = value
+    this.rssService.sortByDate(this.dateSort)
+  }
+
+  sortDescription(value){
+    this.descriptionSort = value
+    this.rssService.sortByDate(this.descriptionSort)
   }
 
 }
