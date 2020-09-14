@@ -1,21 +1,24 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core';
 import { RssService, RSS } from 'src/app/rss.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AuthService } from '../auth.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-feed-menu',
   templateUrl: './feed-menu.component.html',
   styleUrls: ['./feed-menu.component.scss']
 })
-export class FeedMenuComponent implements OnInit {
+export class FeedMenuComponent implements OnInit, OnDestroy {
   @Input() rss: RSS;
 
   url: string = "";
   opened: boolean;
   mobileQuery: MediaQueryList;
   userprofile: any;
+  titleAsc: boolean = true;
+  dateAsc: boolean = true;
+  descAsc: boolean = true;
 
   private _mobileQueryListener:() => void;
 
@@ -38,7 +41,7 @@ export class FeedMenuComponent implements OnInit {
   ngOnInit(): void {
     this.rssService.get()
     this.auth.userProfile$.subscribe(val => this.userprofile = val)
-    //console.log(this.rssService.itemsNoCategory)
+    console.log(this.rssService.urlList)
   }
 
   addFeedUrl(){

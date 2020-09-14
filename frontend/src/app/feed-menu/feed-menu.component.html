@@ -5,10 +5,11 @@
     
     <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0" class="sidenav-container">
         <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]='mobileQuery.matches' fixedTopGap="56"> 
-            <mat-nav-list>
+            <mat-nav-list class="navbar-list">
                 <a mat-list-item><img mat-card-avatar src="{{ userprofile.picture }}" alt="user profile"></a>
                 <a mat-list-item> Hello {{ userprofile.given_name }} </a>
                 <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
+                <a mat-list-item><mat-icon>invert_colors</mat-icon></a>
             </mat-nav-list>
         </mat-sidenav>
 
@@ -16,7 +17,7 @@
         <mat-sidenav-content>
             <div class="tab-container">
                 <mat-tab-group mat-align-tabs="start">
-                  <mat-tab label="Add">
+                  <mat-tab label="Edit">
                     <div>
                         <mat-form-field class="full-width" class="rss-form">
                             <mat-label>RSS feed</mat-label>
@@ -24,14 +25,34 @@
                         </mat-form-field>
                         <button (click)="addFeedUrl()" mat-raised-button color="primary" class="rss-form">Add to Feed</button>
                     </div>
+                    <div>
+                        <mat-selection-list>
+                            <mat-list-option *ngFor="let key of rssService.urlList">
+                                {{ key }}
+                            </mat-list-option>
+                        </mat-selection-list>
+                    </div>
                   </mat-tab>
                   <mat-tab label="Feed">
-                    <section>
-                        
-                    </section>
-                    <div>
-                        <div *ngFor="let feeds of rssService.items | keyvalue">
-                            <mat-card *ngFor="let feed of feeds.value" style="margin-top:10px;">
+                    <div class="feed-containers">
+                        Title:
+                        <mat-button-toggle-group name="titleSort">
+                            <mat-button-toggle value="ascending">A-Z</mat-button-toggle>
+                            <mat-button-toggle value="descending">Z-A</mat-button-toggle>
+                        </mat-button-toggle-group>
+                        Published date: 
+                        <mat-button-toggle-group name="dateSort">
+                            <mat-button-toggle value="newest">Newest</mat-button-toggle>
+                            <mat-button-toggle value="oldest">Oldest</mat-button-toggle>
+                        </mat-button-toggle-group>
+                        Description:
+                        <mat-button-toggle-group name="descriptionSort">
+                            <mat-button-toggle value="ascendingDesc">A-Z</mat-button-toggle>
+                            <mat-button-toggle value="ascendingDesc">Z-A</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <div class="feed-containers">
+                        <mat-card *ngFor="let feed of rssService.itemsNoCategory ">
                             <mat-card-header>
                                 <mat-card-title> {{feed.title}} </mat-card-title>
                                 <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
@@ -43,12 +64,30 @@
                                 <img src="height: 100%; width: 100%" src="{{ feed.image }}">
                             </mat-card-content>
                             <mat-card-actions>
-                                <button mat-button> <a href="{{feed.link}}"> Go to article </a> </button>
+                                <button mat-stroked-button> <a href="{{feed.link}}"> Go to article </a> </button>
                             </mat-card-actions>
                     
                         </mat-card>
-                        </div>
                     </div>
+                    <!-- <div *ngFor="let feeds of rssService.items | keyvalue">
+                        <mat-card *ngFor="let feed of feeds.value" style="margin-top:10px;">
+                        <mat-card-header>
+                            <mat-card-title> {{feed.title}} </mat-card-title>
+                            <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>
+                                {{feed.description }}
+                            </p>
+                            <img src="height: 100%; width: 100%" src="{{ feed.image }}">
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button mat-button> <a href="{{feed.link}}"> Go to article </a> </button>
+                        </mat-card-actions>
+                
+                    </mat-card>
+                    <mat-paginator [pageSize]="10" [pageSizeOption]="[5, 10, 25, 100]" ></mat-paginator>
+                    </div> -->
                   </mat-tab>
                 </mat-tab-group>
               </div>
