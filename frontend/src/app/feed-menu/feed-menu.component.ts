@@ -24,6 +24,7 @@ export class FeedMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.rssService.get()
+    console.log(this.rssService.items)
   }
   
 
