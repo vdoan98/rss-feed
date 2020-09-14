@@ -30,8 +30,14 @@ def create_app(test_config=None):
     GET request for getting feeds based on user information. 
     If no user exists, meaning user is new or that user was created prior but never add any rss url 
     to feed, create new user in database 
+    request json format:
+        {
+            "given_name": "Mr. Test",
+            "email": "test@test.com",
+            "picture": "picture_link"
+        }
     '''
-    @app.route('/api/feeds', methods=['GET'])
+    @app.route('/api/feeds', methods=['POST'])
     def get_feed():
         #TODO: real time update
         #feed_url = request.get_json() #Not correct
@@ -76,7 +82,15 @@ def create_app(test_config=None):
             'user_id': user_id
         })
 
-    @app.route('/api/feeds', methods=['POST'])
+
+    '''
+    request json format:
+        {
+            "url": "rss_feed_url",
+            "email": "test@test.com"
+        }
+    '''
+    @app.route('/api/feeds/add', methods=['POST'])
     def add_feed():
         data = request.get_json()
         url = data.get('url', '')
@@ -95,6 +109,13 @@ def create_app(test_config=None):
             'feeds': [i.format() for i in feed_urls]
         })
 
+
+    '''
+    request json format:
+        {
+            "email": "test@test.com"
+        }
+    '''
     @app.route('/api/feeds/<int:feed_id>', methods=["DELETE"])
     def delete_feed(feed_id):
         data = request.get_json()

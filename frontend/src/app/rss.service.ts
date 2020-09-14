@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 
 import { environment } from 'src/environments/environment';
 
@@ -114,9 +116,36 @@ export class RssService {
   constructor(private http: HttpClient, private auth: AuthService) { }
 
   public get(){
+    let given_name = this.auth.userProfile$.subscribe((given_name: string) => {
+      return given_name;
+    })
+    let email = this.auth.userProfile$.subscribe((email: string) => {
+      return email;
+    })
+    let picture = this.auth.userProfile$.subscribe((picture: string) => {
+      return picture;
+    })
+    let formData = new FormData()
+    formData.append('given_name', JSON.stringify(given_name))
+    formData.append('email', JSON.stringify(email))
+    formData.append('picture', JSON.stringify(picture))
+    return this.http.post(this.SERVER_URL + '/api/feeds', formData)
   }
 
-  public post(rss: RSS) {
+  public post() {
+    let email = this.auth.userProfile$.subscribe((email: string) => {
+      return email;
+    })
+    let formData = new FormData()
+    formData.append('email', JSON.stringify(email))
+    formData.append('url', '')
+    return this.http.post(this.SERVER_URL + '/api/feeds/add', formData)
   }
+
+  // public delete(rss: RSS){
+  //   return this.http.delete(this.url + '/api/feeds/' + rss.id, {
+  //     email: this.auth.userProfile$.email
+  //   })
+  // }
 
 }
