@@ -26,8 +26,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeedMenuComponent } from './feed-menu/feed-menu.component';
-import { LoginComponent } from './login/login.component';
-import { ProfileComponent } from './profile/profile.component';
 
 
 
@@ -35,9 +33,7 @@ import { ProfileComponent } from './profile/profile.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    FeedMenuComponent,
-    LoginComponent,
-    ProfileComponent
+    FeedMenuComponent
   ],
   imports: [
     BrowserModule,
