@@ -1,5 +1,5 @@
 # RSS Feed Web Application 
-A web application for creating a personalized RSS feed. Application can be access [here](https://rss-feed-2020.herokuapp.com/).
+A web application for creating a personalized RSS feed. 
 
 ## Description
 
