@@ -111,6 +111,14 @@ def add_feed():
     print(url)
     user_id = User.query.filter(User.email == data.get('email')).first().id
     check_feed = Feed.query.filter(Feed.user_id == user_id).filter(Feed.feed_url == url).first()
+
+    try:
+        rssFeed = feedparser.parse(rss.feed_url)
+    except: 
+        return jsonify({
+        'success': False,
+        'feeds': [i.format() for i in feed_urls]
+        })
         
     if check_feed is None:
         feed = Feed(user_id=user_id, feed_url=url)
