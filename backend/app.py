@@ -113,8 +113,9 @@ def add_feed():
     check_feed = Feed.query.filter(Feed.user_id == user_id).filter(Feed.feed_url == url).first()
 
     try:
-        rssFeed = feedparser.parse(rss.feed_url)
+        rssFeed = feedparser.parse(url)
     except: 
+        feed_urls = Feed.query.filter(Feed.user_id == user_id).all()        
         return jsonify({
         'success': False,
         'feeds': [i.format() for i in feed_urls]
