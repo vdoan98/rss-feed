@@ -4,7 +4,7 @@
     </mat-toolbar> 
     
     <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0" class="sidenav-container">
-        <mat-sidenav class="fixed-nav" #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]='mobileQuery.matches' fixedTopGap="56"> 
+        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]='mobileQuery.matches' fixedTopGap="56"> 
             <mat-nav-list class="navbar-list">
                 <a mat-list-item><img mat-card-avatar src="{{ userprofile.picture }}" alt="user profile"></a>
                 <a mat-list-item> Hello {{ userprofile.given_name }} </a>
@@ -12,7 +12,7 @@
             </mat-nav-list>
 
             <mat-nav-list [ngClass]="appropriateClass">
-                <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
+                <a mat-list-item (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</a>
             </mat-nav-list>
         </mat-sidenav>
 
@@ -23,21 +23,18 @@
                   <mat-tab label="Edit">
                     <div>
                         <mat-form-field class="full-width" class="rss-form">
-                            <mat-label>RSS feed</mat-label>
+                            <mat-label class="rss-elem">RSS feed</mat-label>
                             <input matInput placeholder="http://feeds.bbci.co.uk/news/technology/rss.xml" [(ngModel)]='url'>
                         </mat-form-field>
-                        <button (click)="addFeedUrl()" mat-raised-button color="primary" class="rss-form">Add to Feed</button>
+                        <button (click)="addFeedUrl()" mat-raised-button color="primary" class="rss-form rss-elem" style="margin:0 auto;">Add to Feed</button>
                     </div>
                     <div>
                         <mat-selection-list #urls [(ngModel)]="selectedUrls">
-                            <mat-list-option *ngFor="let key of rssService.urlList" [value]="key.id">
+                            <mat-list-option *ngFor="let key of rssService.urlList" [value]="key.id" class="rss-elem">
                                 {{ key.feed_url }}
                             </mat-list-option>
-                            <button (click)="deleteFeedUrl()" mat-raised-button color="primary"> Delete from Feed </button>
                         </mat-selection-list>
-                        <p>
-                            Options selected: {{ selectedUrls }}
-                        </p>
+                        <button (click)="deleteFeedUrl()" mat-raised-button color="warn" class="rss-elem" style="margin:0 auto; display:block;"> Delete from Feed </button>
                     </div>
                   </mat-tab>
                   <mat-tab label="Feed">
@@ -61,8 +58,8 @@
                     <div class="feed-containers">
                         <mat-card *ngFor="let feed of rssService.itemsNoCategory ">
                             <mat-card-header class="feed-elements">
-                                <mat-card-title class="rss-elem bold"> {{feed.title}} </mat-card-title>
-                                <mat-card-subtitle class="rss-elem"> {{feed.published}} </mat-card-subtitle>
+                                <mat-card-title class="rss-elem bold"> <a href="{{feed.link}}" class="rss-elem link-button">{{feed.title}} </a></mat-card-title>
+                                <mat-card-subtitle class="rss-elem"> {{feed.published | date: 'MM/dd/yyyy hh:mm'}} </mat-card-subtitle>
                             </mat-card-header>
                             <mat-card-content class="feed-elements">
                                 <p class="rss-elem-child">
@@ -70,10 +67,6 @@
                                 </p>
                                 <img src="height: 100%; width: 100%" src="{{ feed.image }}">
                             </mat-card-content>
-                            <mat-card-actions class="feed-elements">
-                                <button mat-stroked-button > <a href="{{feed.link}}" class="rss-elem link-button"> Go to article </a> </button>
-                            </mat-card-actions>
-                    
                         </mat-card>
                     </div>
                     <!-- <div *ngFor="let feeds of rssService.items | keyvalue">

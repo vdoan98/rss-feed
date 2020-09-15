@@ -11,6 +11,8 @@
 #titleElem{
     font-size: 3em;
     font-family: 'Old Standard TT', serif;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .intro-container{
@@ -91,4 +93,14 @@ header {
 
 .intro-container > h2, p{
     display: block;
+}
+
+.top-bottom-border{
+    border-bottom: 1px; 
+    border-right: 0;
+    border-left: 0;
+    border-top: 1px; 
+    border-style:solid; 
+    border-color: black;
+    display: inline-block;
 }
