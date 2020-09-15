@@ -111,18 +111,18 @@ export class RssService {
   sortByTitle(reverse:boolean = false){
     this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
-      this.itemsNoCategory.sort((a, b) => (a['title'].toLowerCase() < b['title'].toLowerCase()) ? 1 : -1);
+      this.itemsNoCategory.sort((a, b) => (a['title'].replace(/[^a-z0-9]/gi,'').toLowerCase() < b['title'].replace(/[^a-z0-9]/gi,'').toLowerCase()) ? 1 : -1);
     } else {
-      this.itemsNoCategory.sort((a, b) => (a['title'].toLowerCase() > b['title'].toLowerCase()) ? 1 : -1);
+      this.itemsNoCategory.sort((a, b) => (a['title'].replace(/[^a-z0-9]/gi,'').toLowerCase() > b['title'].replace(/[^a-z0-9]/gi,'').toLowerCase()) ? 1 : -1);
     }
   }
 
   sortByDescription(reverse:boolean = false){
     this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
-      this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase() < b['description'].toLowerCase() ) ? 1: -1)
+      this.itemsNoCategory.sort((a, b) => (a['description'].replace(/[^a-z0-9]/gi,'').toLowerCase() < b['description'].replace(/[^a-z0-9]/gi,'').toLowerCase() ) ? 1: -1)
     } else {
-      this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase() > b['description'].toLowerCase() ) ? 1: -1)
+      this.itemsNoCategory.sort((a, b) => (a['description'].replace(/[^a-z0-9]/gi,'').toLowerCase() > b['description'].replace(/[^a-z0-9]/gi,'').toLowerCase() ) ? 1: -1)
     }
   }
 

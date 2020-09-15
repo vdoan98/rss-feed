@@ -45,9 +45,9 @@ def get_feed():
     #TODO: real time update
     #feed_url = request.get_json() #Not correct
     search_user = request.get_json()
-    print(search_user)
+    #print(search_user)
     user = User.query.filter(User.email == search_user['email']).first()
-    print(user)
+    #print(user)
     if user is None:
         user = User(name=search_user.get('given_name'),email=search_user.get('email'),picture=search_user.get('picture'))
         user.insert()
@@ -108,13 +108,13 @@ request json format:
 def add_feed():
     data = request.get_json()
     url = data.get('url', '')
-    print(url)
     user_id = User.query.filter(User.email == data.get('email')).first().id
     check_feed = Feed.query.filter(Feed.user_id == user_id).filter(Feed.feed_url == url).first()
 
     try:
-        rssFeed = feedparser.parse(url)
+        feedparser.parse(url)
     except: 
+        print('Invalid url')
         feed_urls = Feed.query.filter(Feed.user_id == user_id).all()        
         return jsonify({
         'success': False,
@@ -152,7 +152,7 @@ def delete_feed(feed_id):
     feed = Feed.query.filter(Feed.id == feed_id).first()
 
     feed_id = feed.id
-    print(feed_id)
+    #print(feed_id)
     feed.delete()
 
     return jsonify({
