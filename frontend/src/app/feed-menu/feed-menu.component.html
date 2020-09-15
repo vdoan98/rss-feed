@@ -4,7 +4,7 @@
     </mat-toolbar> 
     
     <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0" class="sidenav-container">
-        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]='mobileQuery.matches' fixedTopGap="56"> 
+        <mat-sidenav class="fixed-nav" #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]='mobileQuery.matches' fixedTopGap="56"> 
             <mat-nav-list class="navbar-list">
                 <a mat-list-item><img mat-card-avatar src="{{ userprofile.picture }}" alt="user profile"></a>
                 <a mat-list-item> Hello {{ userprofile.given_name }} </a>
@@ -12,7 +12,6 @@
             </mat-nav-list>
 
             <mat-nav-list [ngClass]="appropriateClass">
-                <a mat-list-item><button mat-button>Ghiblified</button></a>
                 <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
             </mat-nav-list>
         </mat-sidenav>
@@ -97,6 +96,7 @@
                     <mat-paginator [pageSize]="10" [pageSizeOption]="[5, 10, 25, 100]" ></mat-paginator>
                     </div> -->
                   </mat-tab>
+                
                 </mat-tab-group>
               </div>
         </mat-sidenav-content>

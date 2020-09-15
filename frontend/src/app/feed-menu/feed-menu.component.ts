@@ -5,6 +5,8 @@ import { AuthService } from '../auth.service';
 import { DatePipe } from '@angular/common';
 
 
+
+
 @Component({
   selector: 'app-feed-menu',
   templateUrl: './feed-menu.component.html',
@@ -23,6 +25,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
   selectedUrls: string[];
   appropriateClass: string = '';
 
+
   @HostListener('window:resize', ['$event'])
   getScreenHeight (event?) {
     if (window.innerHeight<=412){
@@ -31,6 +34,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
       this.appropriateClass = 'bottomStick';
     }
   }
+
 
   private _mobileQueryListener:() => void;
 
@@ -57,6 +61,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
     this.auth.userProfile$.subscribe(val => this.userprofile = val)
     console.log(this.rssService.urlList)
   }
+
 
   addFeedUrl(){
     this.rssService.post(this.url)
