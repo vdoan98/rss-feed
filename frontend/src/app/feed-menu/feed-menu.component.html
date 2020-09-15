@@ -8,8 +8,12 @@
             <mat-nav-list class="navbar-list">
                 <a mat-list-item><img mat-card-avatar src="{{ userprofile.picture }}" alt="user profile"></a>
                 <a mat-list-item> Hello {{ userprofile.given_name }} </a>
-                <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
+                
+            </mat-nav-list>
+
+            <mat-nav-list [ngClass]="appropriateClass">
                 <a mat-list-item><button mat-button>Ghiblified</button></a>
+                <a mat-list-item><button mat-button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button></a>
             </mat-nav-list>
         </mat-sidenav>
 

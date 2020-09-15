@@ -1,10 +1,20 @@
 #intro{
     margin: 20px;
+    padding: 10px;
 }
 
 #home-image{
     width: 100%;
     height: auto;
+}
+
+#titleElem{
+    color: #ff6666;
+    font-size: 3em;
+}
+
+.intro-container-main{
+    padding: 0.5em;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Atomic+Age&display=swap');
@@ -22,23 +32,25 @@
     }
 
 header {
-    background: white;
 
     .logo {
         background-color: white;
         font-weight: bold;
-        bottom: 10px;
+        bottom: 0px;
         right: 10px;
+        top: 10px;
         width: auto;
         height: auto;
     }
 
     nav {
         justify-self: right;
+        background: white;
+        padding:20px 0 ;
     
         ul {
             list-style-type: none;
-            margin: 0; padding: 0;
+            margin: 0; padding: 0; bottom:0;
 
             li {
                 float: left;
@@ -47,14 +59,25 @@ header {
                     padding: 1.5em;
                     text-transform: uppercase;
                     font-size: .8em;
+                    text-decoration: none;
 
                     &:hover {
-                        background: DarkSeaGreen;
+                        background: #DCDCDC;
                     }
                 }
+                
             }
+
+            
         }
     }
+}
+
+.authElem{
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: #ff6666;
 }
 
 .show{
@@ -63,4 +86,8 @@ header {
 
 .hide{
     display: none;
+}
+
+.intro-container > h2, p{
+    display: block;
 }

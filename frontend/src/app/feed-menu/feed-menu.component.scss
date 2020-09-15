@@ -21,6 +21,15 @@
     flex: 1 0 auto;
 }
 
+.bottomStick{
+    position: absolute;
+    bottom: 0;
+}
+
+.bottomRelative{
+    position: relative;
+}
+
 .full-width{
     min-width: 150px;
     max-width: 500px;
@@ -45,8 +54,4 @@
 
 .feed-containers{
     margin: 10px;
-}
-
-#ghibli-icon > img{
-    width: 100%;
 }

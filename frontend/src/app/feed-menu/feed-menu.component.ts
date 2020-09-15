@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { RssService, RSS } from 'src/app/rss.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AuthService } from '../auth.service';
@@ -21,6 +21,16 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
   dateSort: boolean = false;
   descriptionSort: boolean = false;
   selectedUrls: string[];
+  appropriateClass: string = '';
+
+  @HostListener('window:resize', ['$event'])
+  getScreenHeight (event?) {
+    if (window.innerHeight<=412){
+      this.appropriateClass = 'bottomRelative';
+    }else{
+      this.appropriateClass = 'bottomStick';
+    }
+  }
 
   private _mobileQueryListener:() => void;
 
@@ -32,6 +42,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.getScreenHeight()
   }
 
   ngOnDestroy(): void {

@@ -24,13 +24,12 @@ export interface RSS {
 })
 export class RssService {
 
-  private SERVER_URL = 'http://localhost:5000';
+  // private SERVER_URL = 'https://rss-feed-api.herokuapp.com';
+  private SERVER_URL = 'http://localhost:5000'
   userprofile: any;
 
-  public items: {[key:number]: RSS} = {
-
-  }
   public itemsNoCategory: Array<RSS> = []
+  public unsortedItems: Array<RSS> = []
   public urlList: Array<string> = []
 
   constructor(private http: HttpClient, private auth: AuthService) { }
@@ -40,7 +39,6 @@ export class RssService {
     this.http.post(this.SERVER_URL + '/api/feeds', this.userprofile).
     subscribe((res: any) => {
       this.itemsNoCategory = []
-      this.items = {}
       this.feedsToItems(res['feeds'])
     })
   }
@@ -74,8 +72,6 @@ export class RssService {
     this.http.delete(this.SERVER_URL + '/api/feeds/' + url_id).
     subscribe((res: any) => {
       this.itemsNoCategory = []
-      this.items = {}
-      this.itemsNoCategory = []
       this.get()
       this.getUrl()
     })
@@ -83,9 +79,9 @@ export class RssService {
 
   feedsToItems( feed : Array<RSS>) {
     for (let key of Object.keys(feed)){
-      this.items[key] = feed[key]
       for (let item of feed[key]){
         this.itemsNoCategory.push(item)
+        this.unsortedItems.push(item)
       }
     }
     this.sortByDate()
@@ -98,6 +94,7 @@ export class RssService {
   }
 
   sortByDate(reverse:boolean = false){
+    this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
       this.itemsNoCategory.sort((a, b) => (a['published'] < b['published']) ? 1: -1);
     } else {
@@ -106,6 +103,7 @@ export class RssService {
   }
 
   sortByTitle(reverse:boolean = false){
+    this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
       this.itemsNoCategory.sort((a, b) => (a['title'] < b['title']) ? 1 : -1);
     } else {
@@ -114,6 +112,7 @@ export class RssService {
   }
 
   sortByDescription(reverse:boolean = false){
+    this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
       this.itemsNoCategory.sort((a, b) => (a['description'] < b['description']) ? 1: -1)
     } else {

@@ -7,22 +7,25 @@
               <li><a routerLink="/">Home</a></li>
               <li><a routerLink="/feeds" *ngIf="auth.loggedIn">Feed</a></li>
               <li><a routerLink="/profile" *ngIf="auth.loggedIn">Profile</a></li>
-              <li><a routerLink="/login" *ngIf="!auth.loggedIn">Login</a></li>
-              <li><a routerLink="/login" *ngIf="auth.loggedIn">Logout</a></li>
+              <li><a class="authElem" (click)="auth.login()" *ngIf="!auth.loggedIn" style="cursor:pointer;" >Login</a></li>
+              <li><a class="authElem" (click)="auth.logout()" *ngIf="auth.loggedIn" style="cursor:pointer;">Logout</a></li>
+              <!-- <button (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</button>
+        <button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button> -->
             </ul>
           </nav>
         </div>
     </header>
     
     <mat-grid-list cols="2" rowHeight="1:1">
-        <mat-grid-tile> 
-            <h2> RSS FEED </h2>
-            <p> Create your own news feed and keep up with the news in one touch.</p></mat-grid-tile>
-        <mat-grid-tile>
+        <mat-grid-tile class="intro-container-main"> 
+          <div class='intro-container'>
+            <h1 id="titleElem"> RSS FEED </h1>
+            <p> Create your own news feed and keep up with the news in one touch.</p>
+          </div>  
+        </mat-grid-tile> 
+        <mat-grid-tile class="intro-container-main">
             <img src="../../assets/drawkit-content-man-colour-800px.png" alt="Drawing content man" id="home-image">
         </mat-grid-tile>
-        <mat-grid-tile>3</mat-grid-tile>
-        <mat-grid-tile>4</mat-grid-tile>
       </mat-grid-list>
 </div>
 
