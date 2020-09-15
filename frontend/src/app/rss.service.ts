@@ -97,11 +97,6 @@ export class RssService {
 
   sortByDate(reverse:boolean = false){
     this.itemsNoCategory = [...this.unsortedItems];
-    // if (reverse == true){
-    //   this.itemsNoCategory.sort((a, b) => (a['published'] < b['published'] ) ? 1: -1);
-    // } else {
-    //   this.itemsNoCategory.sort((a, b) => (a['published'] > b['published']) ? 1: -1);
-    // }
     if (reverse == true){
       this.itemsNoCategory.sort(function(a, b) {
         return new Date(a['published']).getTime() - new Date(b['published']).getTime()
@@ -128,7 +123,7 @@ export class RssService {
     if (reverse == true){
       this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase() < b['description'].toLowerCase() ) ? 1: -1)
     } else {
-      this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase()  > b['description'].toLowerCase() ) ? 1: -1)
+      this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase() > b['description'].toLowerCase() ) ? 1: -1)
     }
   }
 

@@ -85,7 +85,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
 
   sortDescription(value){
     this.descriptionSort = value
-    this.rssService.sortByDate(this.descriptionSort)
+    this.rssService.sortByDescription(this.descriptionSort)
   }
 
 }
