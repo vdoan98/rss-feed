@@ -71,6 +71,7 @@ export class FeedMenuComponent implements OnInit, OnDestroy {
     for (let url of this.selectedUrls){
       this.rssService.delete(url);
     }
+    this.rssService.get()
   }
 
   sortTitle(value){

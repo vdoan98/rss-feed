@@ -56,7 +56,15 @@
                             <mat-button-toggle [value]="true">Z-A</mat-button-toggle>
                         </mat-button-toggle-group>
                     </div>
-                    <div class="feed-containers">
+                    <div *ngIf="rssService.itemsNoCategory.length == 0" class="rss-elem">
+                        <div>
+                            <h3 >Nothing here</h3>
+                            <p>
+                                Add a feed to view article
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feed-containers" *ngIf="rssService.itemsNoCategory.length > 0">
                         <mat-card *ngFor="let feed of rssService.itemsNoCategory ">
                             <mat-card-header class="feed-elements">
                                 <mat-card-title class="rss-elem bold"> <a href="{{feed.link}}" class="rss-elem link-button">{{feed.title}} </a></mat-card-title>

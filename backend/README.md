@@ -32,8 +32,75 @@ pip install -r requirements.txt
 This will install all of the required packages we selected within the `requirements.txt` file.
 
 
-#### API Documentation 
+## Database Setup
+With Postgres running, creating a local database. The application will automatically update the database schema when the application is running in dev mode. 
+```bash
+CREATE DATABASE rssfeed;
+```
 
+
+## API documentation
+
+### Endpoints
+```
+POST '/api/feeds'
+- Fetch a dictionary of feed urls based on user email. User email is unique and is used as identifier for feed urls. 
+- Pass json include the following fields in API. Authentication is done via Auth0 so user need a valid email to create an account. The other information will be included in the user profile provided by Auth0. If the email doesn't exist in the database, a new user is created. 
+{
+  'email': 'test@test.com',
+  'given_name': 'given_name',
+  'picture': 'picture'
+}
+- Return:
+{
+  'success': True, 
+  'feeds': {
+    '1': [
+      {
+        'title': '',
+        'published': '',
+        'image': '',
+        'link': ''
+      },
+      ...
+    ]
+  }
+}
+
+POST '/api/urls'
+- Fetches a list of feed urls based on user email. User email is unique and is used as identifier for feed urls. 
+- Pass json include the following fields in API. Authentication is done via Auth0 so user need a valid email to create an account.
+{
+  'email': 'test@test.com',
+}
+- Return:
+{
+  'success': True,
+  'urls': ['https://www.latimes.com/entertainment-arts/books/rss2.0.xml#nt=1col-7030col1',...,'https://www.latimes.com/entertainment-arts/rss2.0.xml#nt=1col-7030col1nt=1col-7030col1']
+}
+
+POST '/api/urls/add'
+- Add new url to database. User email is unique and is used as identifier for feed urls. 
+- Pass json include the following fields in API. Authentication is done via Auth0 so user need a valid email to create an account.
+{
+  'email': 'test@test.com',
+  'url': 'https://www.latimes.com/entertainment-arts/rss2.0.xml#nt=1col-7030col1nt=1col-7030col1'
+}
+- Return:
+{
+  'success': True, 
+  'feeds': ['https://www.latimes.com/entertainment-arts/books/rss2.0.xml#nt=1col-7030col1',...,'https://www.latimes.com/entertainment-arts/rss2.0.xml#nt=1col-7030col1nt=1col-7030col1']
+}
+
+DELETE '/api/feeds/<int: feed_id>'
+- Delete url from database. 
+- Return:
+{
+  'success': True,
+  'deleted': feed_id
+}
+
+```
 
 #### Development instructions 
 

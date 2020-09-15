@@ -64,8 +64,8 @@ export class RssService {
     data["url"] = url
     this.http.post(this.SERVER_URL + '/api/feeds/add', data).
     subscribe((res: any) => {
-      this.itemsNoCategory = []
       this.get()
+      this.getUrl()
     })
   }
 
@@ -73,7 +73,6 @@ export class RssService {
   public delete(url_id: string){
     this.http.delete(this.SERVER_URL + '/api/feeds/' + url_id).
     subscribe((res: any) => {
-      this.itemsNoCategory = []
       this.get()
       this.getUrl()
     })
