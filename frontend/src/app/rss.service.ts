@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 import { environment } from 'src/environments/environment';
+import { getLocaleDateTimeFormat } from '@angular/common';
 
 export interface RSS {
   id: number;
@@ -27,6 +28,7 @@ export class RssService {
   // private SERVER_URL = 'https://rss-feed-api.herokuapp.com';
   private SERVER_URL = 'http://localhost:5000'
   userprofile: any;
+  parseFormat = "ddd, dd MMM yyyy HH:mm:ss zzz";
 
   public itemsNoCategory: Array<RSS> = []
   public unsortedItems: Array<RSS> = []
@@ -94,30 +96,41 @@ export class RssService {
   }
 
   sortByDate(reverse:boolean = false){
-    this.itemsNoCategory = [...this.unsortedItems]
+    this.itemsNoCategory = [...this.unsortedItems];
+    // if (reverse == true){
+    //   this.itemsNoCategory.sort((a, b) => (a['published'] < b['published'] ) ? 1: -1);
+    // } else {
+    //   this.itemsNoCategory.sort((a, b) => (a['published'] > b['published']) ? 1: -1);
+    // }
     if (reverse == true){
-      this.itemsNoCategory.sort((a, b) => (a['published'] < b['published']) ? 1: -1);
+      this.itemsNoCategory.sort(function(a, b) {
+        return new Date(a['published']).getTime() - new Date(b['published']).getTime()
+      });
     } else {
-      this.itemsNoCategory.sort((a, b) => (a['published'] > b['published']) ? 1: -1);
+      this.itemsNoCategory.sort(function(a, b) {
+        return new Date(a['published']).getTime() - new Date(b['published']).getTime()
+      });
+      this.itemsNoCategory.reverse()
     }
   }
 
   sortByTitle(reverse:boolean = false){
     this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
-      this.itemsNoCategory.sort((a, b) => (a['title'] < b['title']) ? 1 : -1);
+      this.itemsNoCategory.sort((a, b) => (a['title'].toLowerCase() < b['title'].toLowerCase()) ? 1 : -1);
     } else {
-      this.itemsNoCategory.sort((a, b) => (a['title'] > b['title']) ? 1 : -1);
+      this.itemsNoCategory.sort((a, b) => (a['title'].toLowerCase() > b['title'].toLowerCase()) ? 1 : -1);
     }
   }
 
   sortByDescription(reverse:boolean = false){
     this.itemsNoCategory = [...this.unsortedItems]
     if (reverse == true){
-      this.itemsNoCategory.sort((a, b) => (a['description'] < b['description']) ? 1: -1)
+      this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase() < b['description'].toLowerCase() ) ? 1: -1)
     } else {
-      this.itemsNoCategory.sort((a, b) => (a['description'] > b['description']) ? 1: -1)
+      this.itemsNoCategory.sort((a, b) => (a['description'].toLowerCase()  > b['description'].toLowerCase() ) ? 1: -1)
     }
   }
+
 
 }

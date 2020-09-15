@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:wght@400;700&family=Open+Sans&display=swap');
+
 .container{
     display: flex;
     flex-direction: column;
@@ -7,7 +9,6 @@
     left: 0;
     right: 0;
 }
-
 .toolbar{
     position: fixd;
     z-index: 2;
@@ -56,6 +57,27 @@
     margin: 10px;
 }
 
+.rss-elem{
+    font-family: 'Old Standard TT', serif;
+}
+
+.bold{
+    font-size: 150%;
+    font-weight: bold;
+}
+
+.rss-elem-child{
+    font-family: 'Open Sans', sans-serif;
+}
+
 .fixed-nav{
     position: fixed;
+}
+
+.link-button{
+    text-decoration: none;
+}
+
+.feed-elements{
+    margin: auto;
 }

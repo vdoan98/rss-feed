@@ -41,37 +41,37 @@
                     </div>
                   </mat-tab>
                   <mat-tab label="Feed">
-                    <div class="feed-containers">
+                    <div class="feed-containers rss-elem-child">
                         Title:
-                        <mat-button-toggle-group name="titleSort" [value]="titleSort" (change)="sortTitle($event.value)">
+                        <mat-button-toggle-group name="titleSort" (change)="sortTitle($event.value)">
                             <mat-button-toggle [value]="false">A-Z</mat-button-toggle>
                             <mat-button-toggle [value]="true">Z-A</mat-button-toggle>
                         </mat-button-toggle-group>
                         Published date: 
-                        <mat-button-toggle-group name="dateSort" [value]="dateSort" (change)="sortDate($event.value)">
+                        <mat-button-toggle-group name="dateSort"  (change)="sortDate($event.value)">
                             <mat-button-toggle [value]="false">Newest</mat-button-toggle>
                             <mat-button-toggle [value]="true">Oldest</mat-button-toggle>
                         </mat-button-toggle-group>
                         Description:
-                        <mat-button-toggle-group name="descriptionSort" [value]="descriptionSort" (change)="sortDescription($event.value)">
+                        <mat-button-toggle-group name="descriptionSort" (change)="sortDescription($event.value)">
                             <mat-button-toggle [value]="false">A-Z</mat-button-toggle>
                             <mat-button-toggle [value]="true">Z-A</mat-button-toggle>
                         </mat-button-toggle-group>
                     </div>
                     <div class="feed-containers">
                         <mat-card *ngFor="let feed of rssService.itemsNoCategory ">
-                            <mat-card-header>
-                                <mat-card-title> {{feed.title}} </mat-card-title>
-                                <mat-card-subtitle> {{feed.published}} </mat-card-subtitle>
+                            <mat-card-header class="feed-elements">
+                                <mat-card-title class="rss-elem bold"> {{feed.title}} </mat-card-title>
+                                <mat-card-subtitle class="rss-elem"> {{feed.published}} </mat-card-subtitle>
                             </mat-card-header>
-                            <mat-card-content>
-                                <p>
-                                    {{feed.description }}
+                            <mat-card-content class="feed-elements">
+                                <p class="rss-elem-child">
+                                    {{feed.description}}
                                 </p>
                                 <img src="height: 100%; width: 100%" src="{{ feed.image }}">
                             </mat-card-content>
-                            <mat-card-actions>
-                                <button mat-stroked-button> <a href="{{feed.link}}"> Go to article </a> </button>
+                            <mat-card-actions class="feed-elements">
+                                <button mat-stroked-button > <a href="{{feed.link}}" class="rss-elem link-button"> Go to article </a> </button>
                             </mat-card-actions>
                     
                         </mat-card>
