@@ -1,6 +1,7 @@
 <div class="container" [class.is-mobile]>
-    <mat-toolbar color="primary" class="toolbar">
+    <mat-toolbar class="toolbar" style="border-style: solid; border-width: 0px 0px 1px 0px; border-color: black;">
         <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+        <h3 class="rss-elem" style="margin:0 auto; font-weight:bold;"> RSS Feed </h3>
     </mat-toolbar> 
     
     <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0" class="sidenav-container">
@@ -26,15 +27,15 @@
                             <mat-label class="rss-elem">RSS feed</mat-label>
                             <input matInput placeholder="http://feeds.bbci.co.uk/news/technology/rss.xml" [(ngModel)]='url'>
                         </mat-form-field>
-                        <button (click)="addFeedUrl()" mat-raised-button color="primary" class="rss-form rss-elem" style="margin:0 auto;">Add to Feed</button>
+                        <button (click)="addFeedUrl()" mat-stroked-button color="primary" class="rss-form rss-elem" style="margin:0 auto; font-weight:bold;">Add to Feed</button>
                     </div>
                     <div>
                         <mat-selection-list #urls [(ngModel)]="selectedUrls">
-                            <mat-list-option *ngFor="let key of rssService.urlList" [value]="key.id" class="rss-elem">
+                            <mat-list-option *ngFor="let key of rssService.urlList" [value]="key.id" class="rss-elem" style="word-wrap: break-word;">
                                 {{ key.feed_url }}
                             </mat-list-option>
                         </mat-selection-list>
-                        <button (click)="deleteFeedUrl()" mat-raised-button color="warn" class="rss-elem" style="margin:0 auto; display:block;"> Delete from Feed </button>
+                        <button (click)="deleteFeedUrl()" mat-stroked-button color="warn" class="rss-elem" style="margin:0 auto; display:block; font-weight:bold;"> Delete from Feed </button>
                     </div>
                   </mat-tab>
                   <mat-tab label="Feed">
