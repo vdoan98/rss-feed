@@ -25,7 +25,7 @@ export interface RSS {
 })
 export class RssService {
 
-  // private SERVER_URL = 'https://rss-feed-api.herokuapp.com';
+  //private SERVER_URL = 'https://rss-feed-api.herokuapp.com';
   private SERVER_URL = 'http://localhost:5000'
   userprofile: any;
   parseFormat = "ddd, dd MMM yyyy HH:mm:ss zzz";

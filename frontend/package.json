@@ -8,9 +8,13 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng build --aot --prod"
+    "postinstall": "ng build --aot --prod",
+    "go": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng serve"
   },
   "private": true,
+  "engines": {
+    "node": "12.10.0"
+  },
   "dependencies": {
     "@angular/animations": "~10.0.2",
     "@angular/cdk": "^10.2.0",
@@ -24,19 +28,24 @@
     "@angular/router": "~10.0.2",
     "@auth0/angular-jwt": "^5.0.1",
     "@auth0/auth0-spa-js": "^1.12.0",
-    "angular-jwt": "^0.1.11",
-    "angularjs-oauth2": "^1.2.1",
-    "rxjs": "~6.5.5",
-    "tslib": "^2.0.0",
-    "zone.js": "~0.10.3"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1000.1",
     "@angular/cli": "~10.0.1",
     "@angular/compiler-cli": "~10.0.2",
-    "@types/node": "^12.11.1",
+    "@angular-devkit/build-angular": "^0.1000.8",
+    "angular-jwt": "^0.1.11",
+    "angularjs-oauth2": "^1.2.1",
+    "nginx": "0.0.0",
+    "rxjs": "~6.5.5",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.10.3",
+    "typescript": "~3.9.5"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^0.1000.8",
+    "@angular/cli": "~10.0.1",
+    "@angular/compiler-cli": "~10.0.2",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0-next.1",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",

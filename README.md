@@ -23,3 +23,8 @@ This application will:
 2. AngularJS [https://angularjs.org/] AngularJS is a JavaScript-based open-source front-end web framework.
 3. Auth0 [https://auth0.com/] Auth0 is a flexible, drop-in solution to add authentication and authorization services to your applications.
 
+## Instruction for running the application locally 
+
+1. Follow instruction in /backend/README.md to set up the local database and server. Start server in development mode. 
+2. Follow instruction in /frontend/README.md to set up the dependencies for frontend. Start front end in development mode. 
+
